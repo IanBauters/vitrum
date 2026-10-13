@@ -1,0 +1,23 @@
+---
+layout: base.njk
+---
+{% from "cover.njk" import cover %}
+{% set item = { data: { title: title, link: link, soort: soort, afbeelding: afbeelding } } %}
+<header class="kop kop--klein">
+  <a class="kop__titel" href="{{ '/' | url }}">{{ site.titel }}</a>
+</header>
+
+<main class="detail">
+  {{ cover(item, true) }}
+  <div class="detail__tekst">
+    <p class="kaart__meta">
+      <span class="soort" style="--kleur: {{ (soort | soortStijl).kleur }}">{{ soort or "Overig" }}</span>
+      <time datetime="{{ page.date | isoDatum }}">{{ page.date | datumNl }}</time>
+    </p>
+    <h1 class="detail__titel">{{ title }}</h1>
+    <p class="detail__samenvatting">{{ samenvatting }}</p>
+    <a class="knop" href="{{ link }}" target="_blank" rel="noopener">Open {{ link | domein }}</a>
+    <div class="detail__body">{{ content | safe }}</div>
+    <a class="terug" href="{{ '/' | url }}">Terug naar Vitrum</a>
+  </div>
+</main>

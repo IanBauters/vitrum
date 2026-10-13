@@ -1,0 +1,13 @@
+{% macro cover(item, groot=false) %}
+{%- set stijl = item.data.soort | soortStijl -%}
+{%- if item.data.afbeelding -%}
+<div class="cover cover--foto" style="--kleur: {{ stijl.kleur }}">
+  <img src="{{ item.data.afbeelding | afbeeldingUrl }}" alt="" loading="lazy">
+</div>
+{%- else -%}
+<div class="cover cover--type{% if groot %} cover--groot{% endif %}" style="--kleur: {{ stijl.kleur }}; --tekst: {{ stijl.tekst }}" aria-hidden="true">
+  <span class="cover__naam">{{ item.data.title }}</span>
+  <span class="cover__domein">{{ item.data.link | domein }}</span>
+</div>
+{%- endif -%}
+{% endmacro %}

@@ -1,0 +1,36 @@
+{
+  "titel": "Vitrum",
+  "intro": "Vitrum is Latijn voor glas: een venster op mijn wereld. Hier deel ik de tools, gadgets en andere bijzondere dingen die ik onderweg tegenkom.",
+  "auteur": "Ian Bauters",
+  "taal": "nl-BE",
+  "soorten": {
+    "Tools": {
+      "kleur": "#1E8C6E",
+      "tekst": "#FFFFFF"
+    },
+    "Gadgets": {
+      "kleur": "#2F4BD8",
+      "tekst": "#FFFFFF"
+    },
+    "Muziek": {
+      "kleur": "#6B5BD2",
+      "tekst": "#FFFFFF"
+    },
+    "Film & foto": {
+      "kleur": "#1C1D24",
+      "tekst": "#FFFFFF"
+    },
+    "Maken": {
+      "kleur": "#E5533D",
+      "tekst": "#FFFFFF"
+    },
+    "Natuur": {
+      "kleur": "#8DB646",
+      "tekst": "#1C1D24"
+    },
+    "Overig": {
+      "kleur": "#F0B429",
+      "tekst": "#1C1D24"
+    }
+  }
+}

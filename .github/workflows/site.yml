@@ -1,0 +1,92 @@
+name: Site bouwen en publiceren
+
+on:
+  push:
+    branches: [main]
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  vondst:
+    name: Nieuwe vondst toevoegen
+    # Alleen formulieren van de eigenaar van de repository worden verwerkt.
+    if: >-
+      github.event_name == 'issues' &&
+      github.event.issue.user.login == github.repository_owner &&
+      contains(github.event.issue.body, '### Link')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bericht aanmaken
+        id: maak
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_CREATED_AT: ${{ github.event.issue.created_at }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/nieuwe-vondst.mjs
+      - name: Opslaan in de repository
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src
+          git commit -m "Nieuwe vondst (#${ISSUE_NUMBER})"
+          git push
+      - name: Issue afsluiten
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          SLUG: ${{ steps.maak.outputs.slug }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          url="https://${OWNER,,}.github.io/${REPO}/${SLUG}/"
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
+            --comment "Toegevoegd. Over een minuutje staat de vondst online: $url"
+
+  publiceren:
+    name: Site publiceren
+    needs: vondst
+    # Draait na een push of handmatig, en na een nieuwe vondst als die gelukt is.
+    if: >-
+      always() &&
+      (needs.vondst.result == 'success' ||
+       (needs.vondst.result == 'skipped' && github.event_name != 'issues'))
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Bouwen
+        env:
+          PATH_PREFIX: /${{ github.event.repository.name }}/
+        run: npx @11ty/eleventy
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4

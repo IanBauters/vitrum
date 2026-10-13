@@ -1,0 +1,4 @@
+{
+  "layout": "vondst.njk",
+  "permalink": "/{{ page.fileSlug }}/"
+}

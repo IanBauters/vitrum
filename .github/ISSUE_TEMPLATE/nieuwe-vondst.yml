@@ -1,0 +1,51 @@
+name: Nieuwe vondst
+description: Zet een nieuwe vondst op Vitrum (werkt alleen voor de eigenaar van de site).
+title: "Vondst: "
+body:
+  - type: input
+    id: naam
+    attributes:
+      label: Naam
+      description: Hoe heet de tool of de vondst?
+      placeholder: TileDropper
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      description: Het webadres waar bezoekers naartoe gaan.
+      placeholder: https://...
+    validations:
+      required: true
+  - type: dropdown
+    id: soort
+    attributes:
+      label: Soort
+      options:
+        - Tools
+        - Gadgets
+        - Muziek
+        - Film & foto
+        - Maken
+        - Natuur
+        - Overig
+    validations:
+      required: true
+  - type: textarea
+    id: samenvatting
+    attributes:
+      label: Korte beschrijving
+      description: Eén of twee zinnen. Deze verschijnen op de kaart op de voorpagina.
+    validations:
+      required: true
+  - type: textarea
+    id: uitleg
+    attributes:
+      label: Meer uitleg
+      description: Optioneel. Hoe gebruik je het, waarom is het handig? Verschijnt op de pagina van de vondst.
+  - type: textarea
+    id: afbeelding
+    attributes:
+      label: Afbeelding
+      description: Optioneel. Sleep hier een screenshot in, of plak een link naar een afbeelding. Zonder afbeelding krijgt de vondst een gekleurde kaart met de naam.

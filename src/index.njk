@@ -1,0 +1,64 @@
+---
+layout: base.njk
+---
+{% from "cover.njk" import cover %}
+{% set items = collections.vondsten %}
+<header class="kop">
+  <a class="kop__titel" href="{{ '/' | url }}">{{ site.titel }}</a>
+  <p class="kop__intro">{{ site.intro }}</p>
+  {% set soorten = items | uniekeSoorten %}
+  {% if soorten.length > 1 %}
+  <nav class="filter" aria-label="Filter op soort">
+    <a href="#" class="filter__knop" data-filter="" aria-current="true">Alles</a>
+    {% for s in soorten %}
+    <a href="#{{ s | slug_soort }}" class="filter__knop" data-filter="{{ s | slug_soort }}" style="--kleur: {{ (s | soortStijl).kleur }}">{{ s }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+</header>
+
+<main class="raster" id="raster">
+  {% for item in items %}
+  <article class="kaart{% if loop.first %} kaart--uitgelicht{% endif %}" data-soort="{{ item.data.soort | slug_soort }}">
+    <a class="kaart__link" href="{{ item.url | url }}">
+      {{ cover(item, loop.first) }}
+      <div class="kaart__tekst">
+        <p class="kaart__meta">
+          <span class="soort" style="--kleur: {{ (item.data.soort | soortStijl).kleur }}">{{ item.data.soort or "Overig" }}</span>
+          <time datetime="{{ item.date | isoDatum }}">{{ item.date | datumNl }}</time>
+        </p>
+        <h2 class="kaart__titel">{{ item.data.title }}</h2>
+        <p class="kaart__samenvatting">{{ item.data.samenvatting }}</p>
+      </div>
+    </a>
+  </article>
+  {% else %}
+  <p class="leeg">Nog niets te zien. De eerste vondst komt eraan.</p>
+  {% endfor %}
+</main>
+
+<script>
+  (function () {
+    var knoppen = document.querySelectorAll(".filter__knop");
+    var kaarten = document.querySelectorAll(".kaart");
+    function toon(soort) {
+      kaarten.forEach(function (k) {
+        k.hidden = !!soort && k.dataset.soort !== soort;
+      });
+      knoppen.forEach(function (b) {
+        if ((b.dataset.filter || "") === soort) b.setAttribute("aria-current", "true");
+        else b.removeAttribute("aria-current");
+      });
+      document.getElementById("raster").classList.toggle("raster--gefilterd", !!soort);
+    }
+    knoppen.forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.preventDefault();
+        var soort = b.dataset.filter || "";
+        history.replaceState(null, "", soort ? "#" + soort : location.pathname);
+        toon(soort);
+      });
+    });
+    toon(location.hash.slice(1));
+  })();
+</script>

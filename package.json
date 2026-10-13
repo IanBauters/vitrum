@@ -1,0 +1,14 @@
+{
+  "name": "vitrum",
+  "version": "1.0.0",
+  "description": "Vitrum: een venster op mijn wereld",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6"
+  },
+  "type": "module",
+  "private": true
+}
